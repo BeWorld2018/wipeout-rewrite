@@ -22,7 +22,7 @@ endif
 ifeq ($(RENDERER), GL)
 	RENDERER_SRC = src/render_gl.c
 	C_FLAGS := $(C_FLAGS) -DRENDERER_GL
-else ($(RENDERER), GL_LEGACY)
+else ifeq ($(RENDERER), GL_LEGACY)
 	RENDERER_SRC = src/render_gl_legacy.c
 	C_FLAGS := $(C_FLAGS) -DRENDERER_GL_LEGACY
 else ifeq ($(RENDERER), SOFTWARE)
@@ -48,7 +48,7 @@ ifeq ($(UNAME_S), MorphOS)
 	
 # macOS ------------------------------------------------------------------------
 
-ifeq ($(UNAME_S), Darwin)
+else ifeq ($(UNAME_S), Darwin)
 	C_FLAGS := $(C_FLAGS) -x objective-c -I/opt/homebrew/include -D_THREAD_SAFE -w
 	L_FLAGS := $(L_FLAGS) -L/opt/homebrew/lib -framework Foundation
 
