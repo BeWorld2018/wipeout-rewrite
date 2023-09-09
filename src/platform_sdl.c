@@ -359,6 +359,10 @@ int main(int argc, char *argv[]) {
 		sdl_path_assets = SDL_GetBasePath();
 		if (sdl_path_assets) {
 			path_assets = sdl_path_assets;
+			#ifdef __MORPHOS__
+			// with SDL2 on MorphOS, we need to add / at end
+			strcat(path_assets, "/");
+			#endif
 		}
 	#endif
 
