@@ -260,7 +260,7 @@ void track_draw_section(section_t *section) {
 
 void track_draw(camera_t *camera) {	
 	render_set_model_mat(&mat4_identity());
-
+	render_push_matrix();
 	// Calculate the camera forward vector, so we can cull everything that's
 	// behind. Ideally we'd want to do a full frustum culling here. FIXME.
 	vec3_t cam_pos = camera->position;
@@ -280,6 +280,8 @@ void track_draw(camera_t *camera) {
 			track_draw_section(s);
 		}
 	}
+
+	render_pop_matrix();
 }
 
 void track_cycle_pickups() {

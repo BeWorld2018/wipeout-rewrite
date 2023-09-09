@@ -6,6 +6,11 @@
 #include "utils.h"
 #include "mem.h"
 
+#ifdef __MORPHOS__
+unsigned long __stack = 1024 * 1024;
+static const char *version __attribute__((used)) = "$VER: wipEout 1.0.1 (01.09.2023) port by BeWorld";
+#endif
+
 static uint64_t perf_freq = 0;
 static bool wants_to_exit = false;
 static SDL_Window *window;
@@ -188,9 +193,9 @@ void platform_pump_events() {
 	}
 }
 
-double platform_now() {
+scalar_t platform_now() {
 	uint64_t perf_counter = SDL_GetPerformanceCounter();
-	return (double)perf_counter / (double)perf_freq;
+	return (scalar_t)perf_counter / (scalar_t)perf_freq;
 }
 
 bool platform_get_fullscreen() {
@@ -247,7 +252,7 @@ uint32_t platform_store_userdata(const char *name, void *bytes, int32_t len) {
 	return file_store(path, bytes, len);
 }
 
-#if defined(RENDERER_GL) // ----------------------------------------------------
+#if defined(RENDERER_GL) || defined(RENDERER_GL_LEGACY)
 	#define PLATFORM_WINDOW_FLAGS SDL_WINDOW_OPENGL
 	SDL_GLContext platform_gl;
 
@@ -392,7 +397,7 @@ int main(int argc, char *argv[]) {
 		.freq = 44100,
 		.format = AUDIO_F32SYS,
 		.channels = 2,
-		.samples = 1024,
+		.samples = 2048,
 		.callback = platform_audio_callback
 	}, NULL, 0);
 

@@ -7,7 +7,12 @@
 	#define glGenVertexArrays glGenVertexArraysAPPLE
 	#define glBindVertexArray glBindVertexArrayAPPLE
 	#define glDeleteVertexArrays glDeleteVertexArraysAPPLE
-
+	
+// MorphOS
+#elif defined(__MORPHOS__)
+	#include "GL/gl.h"
+	
+	
 // Linux
 #elif defined(__unix__)
 	#include <GL/glew.h>
@@ -394,6 +399,8 @@ void render_init(vec2i_t screen_size) {
 	#if defined(__APPLE__) && defined(__MACH__)
 		// OSX
 		// (nothing to do here)
+	#elif __MORPHOS__
+		// nothing lol
 	#else
 		// Windows, Linux
 		glewExperimental = GL_TRUE;
@@ -669,7 +676,13 @@ void render_set_view_2d() {
 
 	render_set_model_mat(&mat4_identity());
 	glUniform3f(prg_game->uniform.camera_pos, 0, 0, 0);
+	#ifdef __MORPHOS__
+	mat4_t mat = mat4_identity();
+	glUniformMatrix4fv(prg_game->uniform.view, 1, false, mat.m);
+	#else
 	glUniformMatrix4fv(prg_game->uniform.view, 1, false, mat4_identity().m);
+	#endif
+	
 	glUniformMatrix4fv(prg_game->uniform.projection, 1, false, projection_mat_2d.m);
 }
 
@@ -677,6 +690,9 @@ void render_set_model_mat(mat4_t *m) {
 	render_flush();
 	glUniformMatrix4fv(prg_game->uniform.model, 1, false, m->m);
 }
+
+void render_push_matrix() { }
+void render_pop_matrix() { }
 
 void render_set_depth_write(bool enabled) {
 	render_flush();

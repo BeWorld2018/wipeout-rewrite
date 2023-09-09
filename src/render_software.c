@@ -63,6 +63,9 @@ void render_set_screen_size(vec2i_t size) {
 void render_set_resolution(render_resolution_t res) {}
 void render_set_post_effect(render_post_effect_t post) {}
 
+void render_push_matrix() { }
+void render_pop_matrix() { }
+
 vec2i_t render_size() {
 	return screen_size;
 }

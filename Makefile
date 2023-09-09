@@ -2,7 +2,7 @@ CC ?= gcc
 EMCC ?= emcc
 UNAME_S := $(shell uname -s)
 UNAME_O := $(shell uname -o)
-RENDERER ?= GL
+RENDERER = GL_LEGACY
 USE_GLX ?= false
 DEBUG ?= false
 USER_CFLAGS ?=
@@ -13,7 +13,7 @@ C_FLAGS ?= -std=gnu99 -Wall -Wno-unused-variable $(USER_CFLAGS)
 ifeq ($(DEBUG), true)
 	C_FLAGS := $(C_FLAGS) -g
 else
-	C_FLAGS := $(C_FLAGS) -O3
+	C_FLAGS := $(C_FLAGS) -O2
 endif
 
 
@@ -22,6 +22,9 @@ endif
 ifeq ($(RENDERER), GL)
 	RENDERER_SRC = src/render_gl.c
 	C_FLAGS := $(C_FLAGS) -DRENDERER_GL
+else ($(RENDERER), GL_LEGACY)
+	RENDERER_SRC = src/render_gl_legacy.c
+	C_FLAGS := $(C_FLAGS) -DRENDERER_GL_LEGACY
 else ifeq ($(RENDERER), SOFTWARE)
 	RENDERER_SRC = src/render_software.c
 	C_FLAGS := $(C_FLAGS) -DRENDERER_SOFTWARE
@@ -34,7 +37,15 @@ ifeq ($(GL_VERSION), GLES2)
 endif
 
 
+# MorphOS ------------------------------------------------------------------------
 
+ifeq ($(UNAME_S), MorphOS)
+	C_FLAGS := $(C_FLAGS)  -noixemul 
+	C_FLAGS := $(C_FLAGS) -I/usr/local/include
+	L_FLAGS := $(L_FLAGS) -L/usr/local/lib
+	L_FLAGS_SDL = -noixemul -lSDL2 -lGL  -lm -lc
+	CC = ppc-morphos-gcc-9
+	
 # macOS ------------------------------------------------------------------------
 
 ifeq ($(UNAME_S), Darwin)
